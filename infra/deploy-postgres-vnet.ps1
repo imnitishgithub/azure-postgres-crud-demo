@@ -8,44 +8,59 @@ param(
     [string]$databaseName = "demo_db"
 )
 
-# Set subscription
+# -------------------------------------------
+# Set Azure subscription
+# -------------------------------------------
 Write-Host "Setting subscription..."
-az account set -s $subscriptionId
+az account set --subscription $subscriptionId
 
-# Create resource group
+# -------------------------------------------
+# Create Resource Group
+# -------------------------------------------
 Write-Host "Creating resource group $resourceGroup ..."
-az group create -n $resourceGroup -l $location | Out-Null
+az group create --name $resourceGroup --location $location | Out-Null
 
-# Create PostgreSQL Flexible Server (Burstable)
+# -------------------------------------------
+# Create PostgreSQL Flexible Server (Public, Burstable)
+# -------------------------------------------
 Write-Host "Creating public PostgreSQL Flexible Server..."
 az postgres flexible-server create `
-  --name $serverName `
-  --resource-group $resourceGroup `
-  --location $location `
-  --admin-user $adminUser `
-  --admin-password $adminPassword `
-  --sku-name Standard_B1ms `
-  --tier Burstable `
-  --version 14 `
-  --public-access 0.0.0.0 `
-  --yes
+    --name $serverName `
+    --resource-group $resourceGroup `
+    --location $location `
+    --admin-user $adminUser `
+    --admin-password $adminPassword `
+    --sku-name Standard_B1ms `
+    --tier Burstable `
+    --version 14 `
+    --public-access 0.0.0.0 `
+    --yes
 
+# -------------------------------------------
 # Wait for server to be ready
+# -------------------------------------------
 Write-Host "Waiting for PostgreSQL server to be ready..."
 do {
-    $status = az postgres flexible-server show --name $serverName --resource-group $resourceGroup --query "userVisibleState" -o tsv
+    $status = az postgres flexible-server show `
+        --name $serverName `
+        --resource-group $resourceGroup `
+        --query "userVisibleState" -o tsv
     Write-Host "Server status: $status"
     Start-Sleep -Seconds 15
 } while ($status -ne "Ready")
 
+# -------------------------------------------
 # Create sample database
+# -------------------------------------------
 Write-Host "Creating database $databaseName ..."
 az postgres flexible-server db create `
-  --resource-group $resourceGroup `
-  --server-name $serverName `
-  --database-name $databaseName
+    --resource-group $resourceGroup `
+    --server-name $serverName `
+    --database-name $databaseName
 
+# -------------------------------------------
 # Output connection info
+# -------------------------------------------
 Write-Host "`n🚀 Deployment complete!"
 Write-Host "====================================="
 Write-Host "Resource Group: $resourceGroup"
