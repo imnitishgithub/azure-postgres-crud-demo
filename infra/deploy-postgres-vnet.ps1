@@ -14,14 +14,15 @@ az account set -s $subscriptionId
 Write-Host "Creating resource group $resourceGroup ..."
 az group create -n $resourceGroup -l $location | Out-Null
 
-Write-Host "Creating **public** PostgreSQL Flexible Server..."
+Write-Host "Creating public PostgreSQL Flexible Server..."
 az postgres flexible-server create `
   --name $serverName `
   --resource-group $resourceGroup `
   --location $location `
   --admin-user $adminUser `
   --admin-password $adminPassword `
-  --sku-name Standard_B1ms `
+  --sku-name B_Standard_B1ms `
+  --tier Burstable `
   --yes `
   --public-access 0.0.0.0
 
