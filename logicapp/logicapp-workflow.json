@@ -1,0 +1,94 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {},
+  "triggers": {
+    "manual": {
+      "type": "Request",
+      "kind": "Http",
+      "inputs": {
+        "schema": {}
+      }
+    }
+  },
+  "actions": {
+    "Switch_on_method": {
+      "type": "Switch",
+      "expression": "@triggerOutputs()['method']",
+      "cases": [
+        {
+          "case": "GET",
+          "actions": {
+            "CallFunctionRead": {
+              "type": "Http",
+              "inputs": {
+                "method": "GET",
+                "uri": "https://<FUNCTION_APP>.azurewebsites.net/api/Read?id=@{triggerOutputs().queries.id}",
+                "headers": {
+                  "x-functions-key": "<FUNCTION_KEY>"
+                }
+              }
+            }
+          }
+        },
+        {
+          "case": "POST",
+          "actions": {
+            "CallFunctionCreate": {
+              "type": "Http",
+              "inputs": {
+                "method": "POST",
+                "uri": "https://<FUNCTION_APP>.azurewebsites.net/api/Create",
+                "headers": {
+                  "x-functions-key": "<FUNCTION_KEY>",
+                  "Content-Type": "application/json"
+                },
+                "body": "@triggerBody()"
+              }
+            }
+          }
+        },
+        {
+          "case": "PUT",
+          "actions": {
+            "CallFunctionUpdate": {
+              "type": "Http",
+              "inputs": {
+                "method": "PUT",
+                "uri": "https://<FUNCTION_APP>.azurewebsites.net/api/Update?id=@{triggerOutputs().queries.id}",
+                "headers": {
+                  "x-functions-key": "<FUNCTION_KEY>",
+                  "Content-Type": "application/json"
+                },
+                "body": "@triggerBody()"
+              }
+            }
+          }
+        },
+        {
+          "case": "DELETE",
+          "actions": {
+            "CallFunctionDelete": {
+              "type": "Http",
+              "inputs": {
+                "method": "DELETE",
+                "uri": "https://<FUNCTION_APP>.azurewebsites.net/api/Delete?id=@{triggerOutputs().queries.id}",
+                "headers": {
+                  "x-functions-key": "<FUNCTION_KEY>"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "default": {
+        "type": "Http",
+        "inputs": {
+          "method": "POST",
+          "uri": "https://httpbin.org/status/405"
+        }
+      }
+    }
+  },
+  "outputs": {}
+}
