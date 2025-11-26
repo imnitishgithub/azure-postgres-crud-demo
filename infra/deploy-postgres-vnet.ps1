@@ -1,5 +1,5 @@
 param(
-  [string]$subscriptionId = "<YOUR_SUBSCRIPTION_ID>",
+  [string]$subscriptionId = "Pay-As-You-Go",
   [string]$resourceGroup = "pg-crud-demo-rg",
   [string]$location = "eastus",
   [string]$vnetName = "pg-vnet",
