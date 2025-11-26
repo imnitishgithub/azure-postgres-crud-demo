@@ -1,5 +1,5 @@
 @description('Location for all resources')
-param location string = 'eastus'
+param location string = 'centralus'
 param rgName string = 'pg-crud-demo-rg'
 
 // VNet
@@ -30,7 +30,7 @@ resource pg 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
   properties: {
     version: '14'
     administratorLogin: 'pgadmin'
-    administratorLoginPassword: 'P@ssw0rd12345!'
+    administratorLoginPassword: 'Demo@12345'
     sku: {
       name: 'Standard_B1ms'
       tier: 'Burstable'
