@@ -19,13 +19,13 @@ az group create -n $resourceGroup -l $location | Out-Null
 # Create public PostgreSQL Flexible Server
 Write-Host "Creating public PostgreSQL Flexible Server..."
 
-  az postgres flexible-server create `
+az postgres flexible-server create `
   --name $serverName `
   --resource-group $resourceGroup `
   --location $location `
   --admin-user $adminUser `
   --admin-password $adminPassword `
-  --sku-name Standard_B1ms `
+  --sku-name B_Standard_B1ms `
   --tier Burstable `
   --version 14 `
   --public-access 0.0.0.0 `
