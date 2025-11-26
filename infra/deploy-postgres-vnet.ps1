@@ -1,4 +1,4 @@
-param(
+param( 
     [string]$subscriptionId = "<your-subscription-id>",
     [string]$location = "centralus",
     [string]$resourceGroup = "pg-crud-demo-rg",
@@ -10,33 +10,30 @@ param(
 
 # Set subscription
 Write-Host "Setting subscription..."
-az account set --subscription $subscriptionId
+az account set -s $subscriptionId
 
 # Create resource group
 Write-Host "Creating resource group $resourceGroup ..."
-az group create --name $resourceGroup --location $location | Out-Null
+az group create -n $resourceGroup -l $location | Out-Null
 
-# Create PostgreSQL Flexible Server (Public)
+# Create public PostgreSQL Flexible Server
 Write-Host "Creating public PostgreSQL Flexible Server..."
 az postgres flexible-server create `
-    --resource-group $resourceGroup `
-    --name $serverName `
-    --location $location `
-    --admin-user $adminUser `
-    --admin-password $adminPassword `
-    --sku-name Standard_B1ms `
-    --tier Burstable `
-    --version 14 `
-    --public-access All `
-    --yes
+  --name $serverName `
+  --resource-group $resourceGroup `
+  --location $location `
+  --admin-user $adminUser `
+  --admin-password $adminPassword `
+  --sku-name Standard_B1ms `
+  --tier Burstable `
+  --version 14 `
+  --public-access 0.0.0.0 `
+  --yes
 
 # Wait for server to be ready
 Write-Host "Waiting for PostgreSQL server to be ready..."
 do {
-    $status = az postgres flexible-server show `
-        --name $serverName `
-        --resource-group $resourceGroup `
-        --query "userVisibleState" -o tsv
+    $status = az postgres flexible-server show --name $serverName --resource-group $resourceGroup --query "userVisibleState" -o tsv
     Write-Host "Server status: $status"
     Start-Sleep -Seconds 15
 } while ($status -ne "Ready")
@@ -44,9 +41,9 @@ do {
 # Create sample database
 Write-Host "Creating database $databaseName ..."
 az postgres flexible-server db create `
-    --resource-group $resourceGroup `
-    --server-name $serverName `
-    --database-name $databaseName
+  --resource-group $resourceGroup `
+  --server-name $serverName `
+  --database-name $databaseName
 
 # Output connection info
 Write-Host "`n🚀 Deployment complete!"
