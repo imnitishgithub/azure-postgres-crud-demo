@@ -1,7 +1,7 @@
 param(
   [string]$subscriptionId = "Pay-As-You-Go",
   [string]$resourceGroup = "pg-crud-demo-rg",
-  [string]$location = "eastus",
+  [string]$location = "centralus",
   [string]$vnetName = "pg-vnet",
   [string]$subnetName = "pg-subnet",
   [string]$pgServerName = "pgcrudserver$(Get-Random -Maximum 99999)",
