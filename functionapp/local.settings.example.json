@@ -6,6 +6,6 @@
     "PG_HOST": "<pg-host>",
     "PG_DB": "demo_db",
     "PG_USER": "pgadmin",
-    "PG_PASSWORD": "P@ssw0rd12345!"
+    "PG_PASSWORD": "Demo@12345"
   }
 }
