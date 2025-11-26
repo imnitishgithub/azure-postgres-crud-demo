@@ -1,5 +1,5 @@
 param( 
-    [string]$subscriptionId = "<your-subscription-id>",
+    [string]$subscriptionId = "Pay-As-You-Go",
     [string]$location = "centralus",
     [string]$resourceGroup = "pg-crud-demo-rg",
     [string]$serverName = "pgcrud$(Get-Random)",
