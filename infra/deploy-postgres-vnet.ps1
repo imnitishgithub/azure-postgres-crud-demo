@@ -8,37 +8,29 @@ param(
     [string]$databaseName = "demo_db"
 )
 
-# -------------------------------------------
-# Set Azure subscription
-# -------------------------------------------
+# Set subscription
 Write-Host "Setting subscription..."
 az account set --subscription $subscriptionId
 
-# -------------------------------------------
-# Create Resource Group
-# -------------------------------------------
+# Create resource group
 Write-Host "Creating resource group $resourceGroup ..."
 az group create --name $resourceGroup --location $location | Out-Null
 
-# -------------------------------------------
-# Create PostgreSQL Flexible Server (Public, Burstable)
-# -------------------------------------------
+# Create PostgreSQL Flexible Server (Public)
 Write-Host "Creating public PostgreSQL Flexible Server..."
 az postgres flexible-server create `
-    --name $serverName `
     --resource-group $resourceGroup `
+    --name $serverName `
     --location $location `
     --admin-user $adminUser `
     --admin-password $adminPassword `
     --sku-name Standard_B1ms `
     --tier Burstable `
     --version 14 `
-    --public-access 0.0.0.0 `
+    --public-access All `
     --yes
 
-# -------------------------------------------
 # Wait for server to be ready
-# -------------------------------------------
 Write-Host "Waiting for PostgreSQL server to be ready..."
 do {
     $status = az postgres flexible-server show `
@@ -49,18 +41,14 @@ do {
     Start-Sleep -Seconds 15
 } while ($status -ne "Ready")
 
-# -------------------------------------------
 # Create sample database
-# -------------------------------------------
 Write-Host "Creating database $databaseName ..."
 az postgres flexible-server db create `
     --resource-group $resourceGroup `
     --server-name $serverName `
     --database-name $databaseName
 
-# -------------------------------------------
 # Output connection info
-# -------------------------------------------
 Write-Host "`n🚀 Deployment complete!"
 Write-Host "====================================="
 Write-Host "Resource Group: $resourceGroup"
